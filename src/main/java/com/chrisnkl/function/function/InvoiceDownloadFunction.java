@@ -59,8 +59,8 @@ public class InvoiceDownloadFunction {
     }
 
     public HttpResponseMessage buildInvoiceResponse(HttpRequestMessage<Optional<String>> request, String fileName, byte[] content) {
-        return request.createResponseBuilder(HttpStatus.FOUND)
-                .header(Headers.CONTENT_TYPE.getName(), "application/pdf")
+        return request.createResponseBuilder(HttpStatus.OK)
+                .header(Headers.CONTENT_TYPE.getName(), "text/plain; charset=utf-8")
                 .header(Headers.CONTENT_DISPOSITION.getName(), "attachment; filename=\""+fileName+"\"")
                 .body(content)
                 .build();
