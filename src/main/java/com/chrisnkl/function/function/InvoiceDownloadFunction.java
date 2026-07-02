@@ -39,6 +39,11 @@ public class InvoiceDownloadFunction {
         Tracker tracker = Tracker.create("download-function-execution", context);
         try {
 
+            if (fileName == null || fileName.isBlank()) {
+                context.getLogger().log(Level.SEVERE, "File Name is null or blank");
+                return buildResponse(request, ApiResponse.badRequest("File Name is null or blank"));
+            }
+
             Tracker downloadTracker = Tracker.create("download-invoice", context);
             byte[] content = downloadHandler.downloadInvoice(fileName);
             downloadTracker.complete();

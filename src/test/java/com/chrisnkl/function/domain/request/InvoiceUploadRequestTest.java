@@ -13,7 +13,7 @@ class InvoiceUploadRequestTest {
     void testValidRequest() {
 
         // Arrange
-        final String fileName = "fileName";
+        final String fileName = "fileName.txt";
         final String content = "content";
 
         // Act
@@ -48,9 +48,22 @@ class InvoiceUploadRequestTest {
     }
 
     @Test
-    void testFactoryMethod() {
+    void testFactoryMethod_WithoutExtension() {
 
         final String fileName = "fileName";
+        final String content = "content";
+
+        InvoiceUploadRequest request = InvoiceUploadRequest.create(fileName, content);
+
+        assertEquals(fileName.concat(".txt"), request.fileName(), () -> "The filename does not match");
+        assertEquals(content, request.content(), () -> "The content does not match");
+
+    }
+
+    @Test
+    void testFactoryMethod_WithExtension() {
+
+        final String fileName = "fileName.txt";
         final String content = "content";
 
         InvoiceUploadRequest request = InvoiceUploadRequest.create(fileName, content);

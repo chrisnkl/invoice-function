@@ -55,7 +55,7 @@ class InvoiceUploadFunctionTest {
         System.setProperty(ApplicationSetting.STORAGE_ACCOUNT_NAME.name(), "dummy-account-name");
         System.setProperty(ApplicationSetting.INVOICES_CONTAINER_NAME.name(), "dummy-container-name");
 
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         invoiceUploadFunction = new InvoiceUploadFunction(uploadHandler);
     }
 

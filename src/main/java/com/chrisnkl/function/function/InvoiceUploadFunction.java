@@ -44,7 +44,7 @@ public class InvoiceUploadFunction {
             String content = request.getBody();
 
             // Convert to upload request and let domain driven behavior validate the record
-            InvoiceUploadRequest uploadRequest = InvoiceUploadRequest.create(fileName+".txt", content);
+            InvoiceUploadRequest uploadRequest = InvoiceUploadRequest.create(fileName, content);
 
             context.getLogger().log(Level.INFO, "Invoice Upload Request: " + uploadRequest);
 
