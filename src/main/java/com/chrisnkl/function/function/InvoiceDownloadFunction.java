@@ -18,7 +18,15 @@ import java.util.logging.Level;
 
 public class InvoiceDownloadFunction {
 
-    private final DownloadHandler downloadHandler = ServiceFactory.getInvoiceDownloadHandler();
+    private final DownloadHandler downloadHandler;
+
+    public InvoiceDownloadFunction() {
+        this(ServiceFactory.getInvoiceDownloadHandler());
+    }
+
+    public InvoiceDownloadFunction(DownloadHandler downloadHandler) {
+        this.downloadHandler = downloadHandler;
+    }
 
     @FunctionName("InvoiceDownloadFunction")
     public HttpResponseMessage run(@HttpTrigger(

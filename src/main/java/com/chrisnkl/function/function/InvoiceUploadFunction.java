@@ -1,6 +1,5 @@
 package com.chrisnkl.function.function;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -17,7 +16,15 @@ import com.microsoft.azure.functions.*;
 
 public class InvoiceUploadFunction {
 
-    private final UploadHandler uploadHandler = ServiceFactory.getInvoiceUploadHandler();
+    private final UploadHandler uploadHandler;
+
+    public InvoiceUploadFunction() {
+        this(ServiceFactory.getInvoiceUploadHandler());
+    }
+
+    public InvoiceUploadFunction(UploadHandler uploadHandler) {
+        this.uploadHandler = uploadHandler;
+    }
 
     @FunctionName("InvoiceUploadFunction")
     public HttpResponseMessage run(

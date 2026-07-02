@@ -11,6 +11,7 @@ import com.chrisnkl.function.exception.ApiException;
 import com.chrisnkl.function.exception.EnvironmentVariableMissingException;
 import com.chrisnkl.function.exception.InvoiceNotFoundException;
 import com.chrisnkl.function.domain.request.InvoiceUploadRequest;
+import com.chrisnkl.function.exception.InvoiceUploadFailureException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -44,7 +45,12 @@ public class BlobService implements IBlobService {
         BlobClient blobClient = client.getBlobClient(request.fileName());
 
         log.info("Uploading content of length: {} to blob: {}", request.content().length(), request.fileName());
-        blobClient.upload(new ByteArrayInputStream(request.content().getBytes(StandardCharsets.UTF_8)), request.content().length(), true);
+
+        try {
+            blobClient.upload(new ByteArrayInputStream(request.content().getBytes(StandardCharsets.UTF_8)), request.content().length(), true);
+        } catch (Exception e) {
+            throw new InvoiceUploadFailureException("Error uploading invoice.", e);
+        }
         log.info("BlobService.uploadInvoice is ending with blob URL: {}", blobClient.getBlobUrl());
         return new InvoiceUploadResponse(blobClient.getBlobUrl());
 
