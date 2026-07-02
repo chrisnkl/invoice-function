@@ -14,6 +14,7 @@ import com.chrisnkl.function.domain.request.InvoiceUploadRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class BlobService implements IBlobService {
@@ -42,9 +43,8 @@ public class BlobService implements IBlobService {
         log.info("Retrieving blob client for upload: {}", request.fileName());
         BlobClient blobClient = client.getBlobClient(request.fileName());
 
-        log.info("Uploading content of length: {} to blob: {}", request.content().length, request.fileName());
-        blobClient.upload(new ByteArrayInputStream(request.content()), request.content().length, true);
-
+        log.info("Uploading content of length: {} to blob: {}", request.content().length(), request.fileName());
+        blobClient.upload(new ByteArrayInputStream(request.content().getBytes(StandardCharsets.UTF_8)), request.content().length(), true);
         log.info("BlobService.uploadInvoice is ending with blob URL: {}", blobClient.getBlobUrl());
         return new InvoiceUploadResponse(blobClient.getBlobUrl());
 

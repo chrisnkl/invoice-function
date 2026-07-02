@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum Headers {
 
-    FILE_NAME("File-Name"),
-    CONTENT_TYPE("Content-Type"),
-    CONTENT_DISPOSITION("Content-Disposition");
+    FILE_NAME("file-name"),
+    CONTENT_TYPE("content-type"),
+    CONTENT_DISPOSITION("content-disposition");
 
     private final String name;
 

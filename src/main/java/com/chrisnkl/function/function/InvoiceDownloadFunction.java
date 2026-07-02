@@ -4,6 +4,7 @@ import com.chrisnkl.function.config.ServiceFactory;
 import com.chrisnkl.function.domain.Headers;
 import com.chrisnkl.function.domain.response.ApiResponse;
 import com.chrisnkl.function.exception.InvoiceDownloadFailureException;
+import com.chrisnkl.function.exception.InvoiceNotFoundException;
 import com.chrisnkl.function.handler.DownloadHandler;
 import com.chrisnkl.function.util.Tracker;
 import com.microsoft.azure.functions.*;
@@ -22,7 +23,7 @@ public class InvoiceDownloadFunction {
     @FunctionName("InvoiceDownloadFunction")
     public HttpResponseMessage run(@HttpTrigger(
             name = "req",
-            authLevel = AuthorizationLevel.FUNCTION,
+            authLevel = AuthorizationLevel.ANONYMOUS,
             methods = HttpMethod.GET,
             route = "invoices/{fileName}"
     ) HttpRequestMessage<Optional<String>> request, @BindingName("fileName") String fileName, final ExecutionContext context) {
@@ -36,6 +37,9 @@ public class InvoiceDownloadFunction {
 
             return buildInvoiceResponse(request, fileName, content);
 
+        } catch (InvoiceNotFoundException e) {
+            context.getLogger().log(Level.WARNING, "Invoice not found.", e);
+            return buildResponse(request, ApiResponse.notFound("Invoice not found."));
         } catch (InvoiceDownloadFailureException e) {
             context.getLogger().log(Level.SEVERE, "Failed to download invoice", e);
             return buildResponse(request, ApiResponse.internalError("Failed to download invoice."));

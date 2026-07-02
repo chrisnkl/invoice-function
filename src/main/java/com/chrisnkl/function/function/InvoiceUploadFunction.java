@@ -1,5 +1,6 @@
 package com.chrisnkl.function.function;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -22,9 +23,9 @@ public class InvoiceUploadFunction {
     public HttpResponseMessage run(
             @HttpTrigger(name = "req",
                     methods = {HttpMethod.POST},
-                    authLevel = AuthorizationLevel.FUNCTION,
+                    authLevel = AuthorizationLevel.ANONYMOUS,
                     route = "invoices"
-            ) HttpRequestMessage<byte[]> request, final ExecutionContext context) {
+            ) HttpRequestMessage<String> request, final ExecutionContext context) {
 
         Tracker tracker = Tracker.create("upload-function-execution", context);
         try {
@@ -33,10 +34,12 @@ public class InvoiceUploadFunction {
             String fileName = request.getHeaders().getOrDefault(Headers.FILE_NAME.getName(), null);
 
             // Retrieve the content bytes
-            byte[] content = request.getBody();
+            String content = request.getBody();
 
             // Convert to upload request and let domain driven behavior validate the record
-            InvoiceUploadRequest uploadRequest = InvoiceUploadRequest.create(fileName, content);
+            InvoiceUploadRequest uploadRequest = InvoiceUploadRequest.create(fileName+".txt", content);
+
+            context.getLogger().log(Level.INFO, "Invoice Upload Request: " + uploadRequest);
 
             // Build the upload response if successful
             Tracker trackerUpload = Tracker.create("upload-invoice", context);
@@ -57,7 +60,7 @@ public class InvoiceUploadFunction {
         }
     }
 
-    public HttpResponseMessage buildResponse(HttpRequestMessage<byte[]> request, ApiResponse<?> response) {
+    public HttpResponseMessage buildResponse(HttpRequestMessage<String> request, ApiResponse<?> response) {
         return request.createResponseBuilder(HttpStatus.valueOf(response.status()))
                 .header(Headers.CONTENT_TYPE.getName(), "application/json")
                 .body(response)
